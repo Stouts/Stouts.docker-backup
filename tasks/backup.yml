@@ -1,0 +1,27 @@
+---
+
+- name: Configure backup
+  set_fact:
+    docker_backup_env: "{{ docker_backup_env|combine({'VOLUMERIZE_SOURCE': '/source', 'VOLUMERIZE_TARGET': docker_backup_target}) }}"
+
+- name: Configure backup for AWS
+  set_fact:
+    docker_backup_env: "{{ docker_backup_env|combine({'AWS_ACCESS_KEY_ID': docker_backup_aws_access_key, 'AWS_SECRET_ACCESS_KEY': docker_backup_aws_secret_access_key}) }}"
+  when: not (docker_backup_aws_access_key|trim == "")
+
+- name: Configure backup for Google Drive
+  set_fact:
+    docker_backup_env: "{{ docker_backup_env|combine({'GOOGLE_DRIVE_ID': docker_backup_google_drive_id, 'AWS_SECRET_ACCESS_KEY': docker_backup_google_drive_secret}) }}"
+  when: not (docker_backup_google_drive_id|trim == "")
+
+- name: Configure backup for Dropbox
+  set_fact:
+    docker_backup_env: "{{ docker_backup_env|combine({'DPBX_ACCESS_TOKEN': docker_backup_dropbox_access_token}) }}"
+  when: not (docker_backup_dropbox_access_token|trim == "")
+
+- name: Run backup container
+  docker_container:
+    name: "{{ docker_backup_name }}"
+    image: "{{ docker_backup_image }}"
+    env: "{{ docker_backup_env }}"
+    volumes: "{{ docker_backup_volumes|map('regex_replace', '(.*)', '\\1:/source/\\1')|list }}"

@@ -1,0 +1,17 @@
+---
+
+docker_backup_enabled: true                     # Is the role enabled
+docker_backup_image: blacklabelops/volumerize   # Backup image
+docker_backup_target: "file:///backup"          # Backup target (AWS, Google, Dropbox)
+docker_backup_name: backup
+docker_backup_env: {}
+docker_backup_volumes: []
+docker_backup_restore: []
+
+docker_backup_aws_access_key: ""
+docker_backup_aws_secret_access_key: ""
+
+docker_backup_google_drive_id: ""
+docker_backup_google_drive_secret: ""
+
+docker_backup_dropbox_access_token: ""
